@@ -1,0 +1,397 @@
+<html><head>
+<style>
+:root {
+  --primary: #1e90ff;
+  --secondary: #4169E1;
+  --background: #1a1a1a;
+  --text: #ffffff;
+  --gem-color: #00ffcc;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 
+    "title title"
+    "clicker upgrades";
+  gap: 20px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  grid-area: title;
+  text-align: center;
+  width: 100%;
+  font-size: 2.5em;
+  text-shadow: 0 0 10px var(--primary);
+  margin-bottom: 30px;
+}
+
+.left-section {
+  grid-area: clicker;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.right-section {
+  grid-area: upgrades;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#clickArea {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  box-shadow: 0 0 30px rgba(30, 144, 255, 0.5),
+              inset 0 0 20px rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+#clickArea:before {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  top: -25%;
+  left: -25%;
+  transition: all 0.3s ease;
+}
+
+#clickArea:hover:before {
+  transform: scale(1.2) rotate(10deg);
+}
+
+#clickArea:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 15px rgba(30, 144, 255, 0.3),
+              inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.stats {
+  background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  padding: 25px;
+  border-radius: 15px;
+  margin: 20px;
+  min-width: 300px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.upgrade, .rebirth-btn {
+  background: linear-gradient(135deg, var(--secondary), #5a7bff);
+  padding: 12px 25px;
+  border-radius: 8px;
+  margin: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.rebirth-btn {
+  background: linear-gradient(135deg, var(--gem-color), #00ccaa);
+  color: var(--background);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.upgrade:hover, .rebirth-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.upgrade:active, .rebirth-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes popNumber {
+  0% { transform: scale(0.8) translateY(0); opacity: 0; }
+  20% { transform: scale(1.2) translateY(-10px); opacity: 1; }
+  100% { transform: scale(1) translateY(-50px); opacity: 0; }
+}
+
+.pop-number {
+  position: absolute;
+  animation: popNumber 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.gem-display {
+  color: var(--gem-color);
+  font-weight: bold;
+  font-size: 1.2em;
+  text-shadow: 0 0 10px var(--gem-color);
+}
+
+h2, h3 {
+  margin: 10px 0;
+  text-shadow: 0 0 5px rgba(255,255,255,0.2);
+}
+
+#upgrades {
+  max-width: 100%;
+}
+  
+.gem-upgrade {
+  background: linear-gradient(135deg, var(--gem-color), #00ffa9);
+  padding: 12px 25px;
+  border-radius: 8px;
+  margin: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  text-align: center;
+  color: var(--background);
+  font-weight: bold;
+}
+
+.gem-upgrade:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.gem-upgrade:active {
+  transform: translateY(1px) scale(0.98);
+}
+</style>
+</head>
+<body>
+  <h1>Klikacz</h1>
+  
+  <div class="left-section">
+    <div id="clickArea"></div>
+    <div class="stats">
+      <h2>Kliknięcia: <span id="score">0</span></h2>
+      <h3>Za Kliknięcie: <span id="perClick">1</span></h3>
+      <h3>Na Sekundę: <span id="perSecond">0</span></h3>
+      <h3>Gemy: <span id="gems" class="gem-display">0</span> 💎</h3>
+      <h3>Mnożnik Kliknięć: <span id="multiplier">1</span>x</h3>
+      <h3>Poziom Rebirth: <span id="rebirthLevel">0</span></h3>
+    </div>
+  </div>
+  
+  <div class="right-section">
+    <div id="upgrades">
+      <div class="upgrade" data-cost="10" data-boost="1" data-type="click">
+        Lepsze Klikanie (Koszt: 10 kliknięć) +1 za kliknięcie
+      </div>
+      <div class="upgrade" data-cost="50" data-boost="1" data-type="auto">
+        Auto Clicker (Koszt: 50 kliknięć) +1 na sekundę
+      </div>
+      <div class="gem-upgrade" data-cost="5" data-boost="0.5" data-type="multiplier">
+        Ulepszenie Mnożnika (Koszt: 5 gemów) +50% mocy klikania
+      </div>
+      <div class="gem-upgrade" data-cost="10" data-boost="2" data-type="rebirthBoost">
+        Ulepszenie Rebirth (Koszt: 10 gemów) +2 gemy za rebirth
+      </div>
+    </div>
+    <div class="rebirth-btn" id="rebirthBtn">
+      Rebirth (Wymagane: 1000 kliknięć) - Otrzymasz 1 Gem 💎
+    </div>
+  </div>
+  
+<script>
+let score = 0;
+let perClick = 1;
+let perSecond = 0;
+let gems = 0;
+let rebirths = 0;
+let clickMultiplier = 1;
+let REBIRTH_REQUIREMENT = 1000;
+let baseRebirthGems = 1;
+
+function getRebirthRequirement() {
+    return Math.floor(1000 * Math.pow(1.5, rebirths));
+}
+
+function getGemsReward() {
+    return Math.floor((baseRebirthGems + Math.pow(1.2, rebirths)) + rebirths);
+}
+
+function getMultiplierBoost() {
+    return 1 + (gems * 0.15);
+}
+
+const clickArea = document.getElementById('clickArea');
+const scoreDisplay = document.getElementById('score');
+const perClickDisplay = document.getElementById('perClick');
+const perSecondDisplay = document.getElementById('perSecond');
+const gemsDisplay = document.getElementById('gems');
+const multiplierDisplay = document.getElementById('multiplier');
+const rebirthBtn = document.getElementById('rebirthBtn');
+
+function formatNumber(num) {
+    if (num >= 1000000) {
+        return (num/1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num/1000).toFixed(1) + 'K';
+    }
+    return Math.floor(num);
+}
+
+function updateDisplays() {
+    scoreDisplay.textContent = formatNumber(score);
+    perClickDisplay.textContent = formatNumber(perClick * clickMultiplier);
+    perSecondDisplay.textContent = formatNumber(perSecond);
+    gemsDisplay.textContent = gems;
+    multiplierDisplay.textContent = clickMultiplier.toFixed(1);
+    document.getElementById('rebirthLevel').textContent = rebirths;
+    
+    document.querySelectorAll('.upgrade, .gem-upgrade').forEach(upgrade => {
+        const cost = parseInt(upgrade.dataset.cost);
+        if (upgrade.classList.contains('gem-upgrade')) {
+            if (gems >= cost) {
+                upgrade.classList.remove('disabled');
+            } else {
+                upgrade.classList.add('disabled');
+            }
+        } else {
+            if (score >= cost) {
+                upgrade.classList.remove('disabled');
+            } else {
+                upgrade.classList.add('disabled');
+            }
+        }
+    });
+
+    if (score >= REBIRTH_REQUIREMENT) {
+        rebirthBtn.classList.remove('disabled');
+    } else {
+        rebirthBtn.classList.add('disabled');
+    }
+}
+
+function createPopNumber(value, x, y, isGem = false) {
+    const pop = document.createElement('div');
+    pop.className = 'pop-number';
+    pop.textContent = isGem ? `+${value} gemów 💎` : `+${formatNumber(value)} ✨`;
+    pop.style.left = `${x}px`;
+    pop.style.top = `${y}px`;
+    if (isGem) pop.style.color = 'var(--gem-color)';
+    document.body.appendChild(pop);
+    setTimeout(() => pop.remove(), 800);
+}
+
+function rebirth() {
+    if (score >= REBIRTH_REQUIREMENT) {
+        const gemsToAdd = getGemsReward();
+        gems += gemsToAdd;
+        rebirths++;
+        clickMultiplier = getMultiplierBoost();
+        REBIRTH_REQUIREMENT = getRebirthRequirement();
+        
+        score = 0;
+        perClick = 1;
+        perSecond = 0;
+        
+        document.querySelectorAll('.upgrade').forEach(upgrade => {
+            if (upgrade.dataset.type === 'click') {
+                const newCost = Math.floor(10 * Math.pow(1.2, rebirths));
+                upgrade.dataset.cost = newCost.toString();
+                upgrade.textContent = `Lepsze Klikanie (Koszt: ${formatNumber(newCost)} kliknięć) +1 za kliknięcie`;
+            } else {
+                const newCost = Math.floor(50 * Math.pow(1.2, rebirths));
+                upgrade.dataset.cost = newCost.toString();
+                upgrade.textContent = `Auto Clicker (Koszt: ${formatNumber(newCost)} kliknięć) +1 na sekundę`;
+            }
+        });
+        
+        createPopNumber(gemsToAdd, window.innerWidth/2, window.innerHeight/2, true);
+        rebirthBtn.textContent = `Rebirth (Wymagane: ${formatNumber(REBIRTH_REQUIREMENT)} kliknięć) - Otrzymasz ${formatNumber(getGemsReward())} Gemów 💎`;
+        updateDisplays();
+    }
+}
+
+clickArea.addEventListener('click', (e) => {
+    const clickValue = perClick * clickMultiplier;
+    score += clickValue;
+    createPopNumber(Math.floor(clickValue), e.pageX, e.pageY);
+    updateDisplays();
+});
+
+document.querySelectorAll('.upgrade, .gem-upgrade').forEach(upgrade => {
+    upgrade.addEventListener('click', () => {
+        const cost = parseInt(upgrade.dataset.cost);
+        const boost = parseFloat(upgrade.dataset.boost);
+        
+        if (upgrade.classList.contains('gem-upgrade')) {
+            if (gems >= cost) {
+                gems -= cost;
+                if (upgrade.dataset.type === 'multiplier') {
+                    clickMultiplier += boost;
+                } else if (upgrade.dataset.type === 'rebirthBoost') {
+                    baseRebirthGems += boost;
+                }
+                
+                upgrade.dataset.cost = Math.floor(cost * 1.5);
+                if (upgrade.dataset.type === 'multiplier') {
+                    upgrade.textContent = `Ulepszenie Mnożnika (Koszt: ${upgrade.dataset.cost} gemów) +50% mocy klikania`;
+                } else {
+                    upgrade.textContent = `Ulepszenie Rebirth (Koszt: ${upgrade.dataset.cost} gemów) +2 gemy za rebirth`;
+                }
+                updateDisplays();
+            }
+        } else {
+            if (score >= cost) {
+                score -= cost;
+                if (upgrade.dataset.type === 'click') {
+                    perClick += boost;
+                } else if (upgrade.dataset.type === 'auto') {
+                    perSecond += boost;
+                }
+                
+                upgrade.dataset.cost = Math.floor(cost * 1.5);
+                upgrade.textContent = `${upgrade.dataset.type === 'click' ? 'Lepsze Klikanie' : 'Auto Clicker'} (Koszt: ${formatNumber(upgrade.dataset.cost)} kliknięć) +1 ${upgrade.dataset.type === 'click' ? 'za kliknięcie' : 'na sekundę'}`;
+                
+                updateDisplays();
+            }
+        }
+    });
+});
+
+rebirthBtn.addEventListener('click', rebirth);
+
+setInterval(() => {
+    if (perSecond > 0) {
+        const autoValue = perSecond * clickMultiplier;
+        score += autoValue;
+        createPopNumber(Math.floor(autoValue), 
+            clickArea.offsetLeft + clickArea.offsetWidth/2, 
+            clickArea.offsetTop + clickArea.offsetHeight/2);
+        updateDisplays();
+    }
+}, 1000);
+
+updateDisplays();
+document.getElementById('rebirthLevel').textContent = rebirths;
+rebirthBtn.textContent = `Rebirth (Wymagane: ${formatNumber(REBIRTH_REQUIREMENT)} kliknięć) - Otrzymasz ${formatNumber(getGemsReward())} Gemów 💎`;
+</script>
+</body></html>
