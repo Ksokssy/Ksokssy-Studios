@@ -297,13 +297,17 @@
   }
  
    .ksokssy-logo {
-    flex: 350px 0 350px;
+    flex: 0 0 350px;
     background: #2a2a2a;
     padding: 2rem;
     border-radius: 10px;
     border: 2px solid #9932CC;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-right: 2rem; /* Add right margin for spacing */
+    margin-right: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* This will make it match the height of the team member description */
   }
 
   .about-logo img {
