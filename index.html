@@ -292,6 +292,8 @@
     padding: 2rem;
     border-radius: 10px;
     border: 2px solid #9932CC;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-right: 2rem; /* Add right margin for spacing */
   }
 
   .about-logo img {
@@ -319,37 +321,44 @@
   }
 
   .team-section {
-    padding: 60px 0
+     margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   .team-member {
-    background-color: var(--card-bg);
+    flex: 1;
+    background: #2a2a2a;
+    padding: 2rem;
     border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: var(--box-shadow);
-    transition: all 0.3s ease;
+    border: 2px solid #9932CC;
+    margin-top: 2rem;
   }
 
   .team-member h4 {
     color: #9932CC;
-    font-size: 1.5rem;
+    font-size: 2.5rem; /* Increased from 1.5rem */
     margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
 
   .team-member p {
-    color: #fff;
+    color: #ccc; /* Changed from #fff to create contrast */
     line-height: 1.6;
   }
 
   .team-member-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+    flex-direction: row-reverse; /* Add this line to reverse the order */
   }
 
   .role {
-    color: #9932CC;
+    color: #8aea92;
+    font-size: 2rem;
     font-style: italic;
     margin-bottom: 1rem;
   }
@@ -498,7 +507,7 @@
         <h3 class="section-title">Nasz Zespół</h3>
         <div class="team-member-container">
           <div class="about-logo">
-            <img alt="Logo Ksokssy" src="images/ksokssy.jpg" width="1024" height="1024">
+            <img alt="Logo Ksokssy" src="ksokssy.jpg" width="300" height="300">
           </div>
           <div class="team-member">
             <h4>Ksokssy</h4>
