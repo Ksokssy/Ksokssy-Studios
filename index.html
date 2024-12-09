@@ -1,5 +1,4 @@
 <html><head>
-<meta charset="UTF-8">
 <title>Ksokssy Studios</title>
 <style>
   * {
@@ -296,7 +295,7 @@
     margin-right: 2rem; /* Add right margin for spacing */
   }
  
-   .ksokssy-logo {
+  .ksokssy-logo {
     flex: 0 0 350px;
     background: #2a2a2a;
     padding: 2rem;
@@ -314,6 +313,13 @@
     width: 100%;
     height: auto;
     border-radius: 5px;
+  }
+
+  .ksokssy-logo img {
+    max-width: 100%; /* Added */
+    height: auto; /* Added */
+    display: block; /* Added */
+    object-fit: contain; /* Ensures image maintains aspect ratio */
   }
 
   .about-text {
@@ -347,7 +353,10 @@
     padding: 2rem;
     border-radius: 10px;
     border: 2px solid #9932CC;
-    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%; /* Ensure it takes full height */
   }
 
   .team-member h4 {
@@ -366,8 +375,9 @@
   .team-member-container {
     display: flex;
     gap: 4rem;
-    align-items: flex-start;
-    flex-direction: row-reverse; /* Add this line to reverse the order */
+    align-items: stretch; /* Changed from flex-start to stretch */
+    flex-direction: row-reverse;
+    margin-bottom: 2rem; /* Add some bottom margin */
   }
 
   .role {
